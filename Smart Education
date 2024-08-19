@@ -1,0 +1,131 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class QuizApp extends JFrame implements ActionListener {
+    private JLabel label, questionLabel, resultLabel;
+    private JTextField entry;
+    private JButton submitButton, startButton;
+    private int score = 0;
+    private int totalQuestions = 0;
+    private String currentState;
+    private Map<String, String> statesAndCapitals;
+
+    public QuizApp() {
+        setTitle("State Capitals Quiz");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        statesAndCapitals = new HashMap<>();
+        statesAndCapitals.put("Andhra Pradesh", "Amaravati");
+        statesAndCapitals.put("Arunachal Pradesh", "Itanagar");
+        statesAndCapitals.put("Assam", "Dispur");
+        statesAndCapitals.put("Bihar", "Patna");
+        statesAndCapitals.put("Chhattisgarh", "Raipur");
+        statesAndCapitals.put("Goa", "Panaji");
+        statesAndCapitals.put("Gujarat", "Gandhinagar");
+        statesAndCapitals.put("Haryana", "Chandigarh");
+        statesAndCapitals.put("Himachal Pradesh", "Shimla");
+        statesAndCapitals.put("Jharkhand", "Ranchi");
+        statesAndCapitals.put("Karnataka", "Bengaluru");
+        statesAndCapitals.put("Kerala", "Thiruvananthapuram");
+        statesAndCapitals.put("Madhya Pradesh", "Bhopal");
+        statesAndCapitals.put("Maharashtra", "Mumbai");
+        statesAndCapitals.put("Manipur", "Imphal");
+        statesAndCapitals.put("Meghalaya", "Shillong");
+        statesAndCapitals.put("Mizoram", "Aizawl");
+        statesAndCapitals.put("Nagaland", "Kohima");
+        statesAndCapitals.put("Odisha", "Bhubaneswar");
+        statesAndCapitals.put("Punjab", "Chandigarh");
+        statesAndCapitals.put("Rajasthan", "Jaipur");
+        statesAndCapitals.put("Sikkim", "Gangtok");
+        statesAndCapitals.put("Tamil Nadu", "Chennai");
+        statesAndCapitals.put("Telangana", "Hyderabad");
+        statesAndCapitals.put("Tripura", "Agartala");
+        statesAndCapitals.put("Uttar Pradesh", "Lucknow");
+        statesAndCapitals.put("Uttarakhand", "Dehradun");
+        statesAndCapitals.put("West Bengal", "Kolkata");
+
+        label = new JLabel("Click 'Start Quiz' to begin!");
+        label.setFont(new Font("Helvetica", Font.PLAIN, 16));
+        add(label);
+
+        questionLabel = new JLabel("");
+        questionLabel.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        add(questionLabel);
+
+        entry = new JTextField(20);
+        entry.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        add(entry);
+
+        submitButton = new JButton("Submit");
+        submitButton.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        submitButton.addActionListener(this);
+        add(submitButton);
+
+        startButton = new JButton("Start Quiz");
+        startButton.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        startButton.addActionListener(this);
+        add(startButton);
+
+        resultLabel = new JLabel("");
+        resultLabel.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        add(resultLabel);
+
+        setVisible(true);
+    }
+
+    private void startQuiz() {
+        totalQuestions = 0;
+        score = 0;
+        askQuestion();
+    }
+
+    private void askQuestion() {
+        Random rand = new Random();
+        Object[] states = statesAndCapitals.keySet().toArray();
+        currentState = (String) states[rand.nextInt(states.length)];
+        questionLabel.setText("What is the capital of " + currentState + "?");
+        entry.setText("");
+        resultLabel.setText("");
+        totalQuestions++;
+    }
+
+    private void checkAnswer() {
+        String capital = statesAndCapitals.get(currentState);
+        String userAnswer = entry.getText().trim();
+        if (userAnswer.equalsIgnoreCase(capital)) {
+            score++;
+            resultLabel.setText("Correct! Your score: " + score + "/" + totalQuestions);
+        } else {
+            resultLabel.setText("Incorrect! The capital of " + currentState + " is " + capital + ". Your score: " + score + "/" + totalQuestions);
+        }
+
+        if (totalQuestions < 10) { // Adjust the number of questions as needed
+            askQuestion();
+        } else {
+            JOptionPane.showMessageDialog(this, "Quiz Finished!\nYour final score is: " + score + "/" + totalQuestions);
+            questionLabel.setText("Quiz Finished!");
+            startButton.setText("Restart Quiz");
+            resultLabel.setText("");
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == startButton) {
+            startQuiz();
+        } else if (e.getSource() == submitButton) {
+            checkAnswer();
+        }
+    }
+
+    public static void main(String[] args) {
+        new QuizApp();
+    }
+}
